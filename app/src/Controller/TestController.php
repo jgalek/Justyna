@@ -29,7 +29,6 @@ class TestController extends AbstractController
      *     name="test_index"
      * )
      */
-
     public function index(TestRepository $repository): Response
     {
         return $this->render(
@@ -48,7 +47,7 @@ class TestController extends AbstractController
      * @Route(
      *     "/{id}",
      *     name="test_view",
-     *     requirements={"id": "[1-9]\d*"},
+     *     requirements={"id": "[0-9]\d*"},
      * )
      */
     public function view(TestRepository $repository, int $id): Response
