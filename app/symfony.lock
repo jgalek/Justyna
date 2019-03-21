@@ -123,6 +123,21 @@
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
+    "jms/metadata": {
+        "version": "1.7.0"
+    },
+    "jms/parser-lib": {
+        "version": "1.0.0"
+    },
+    "jms/serializer": {
+        "version": "1.7.1"
+    },
+    "knplabs/knp-components": {
+        "version": "v1.3.10"
+    },
+    "knplabs/knp-paginator-bundle": {
+        "version": "v3.0.0"
+    },
     "nikic/php-parser": {
         "version": "v4.2.1"
     },
@@ -138,8 +153,14 @@
     "php-cs-fixer/diff": {
         "version": "v1.3.0"
     },
+    "phpcollection/phpcollection": {
+        "version": "0.5.0"
+    },
     "phpmd/phpmd": {
         "version": "2.6.0"
+    },
+    "phpoption/phpoption": {
+        "version": "1.5.0"
     },
     "psr/cache": {
         "version": "1.0.1"
@@ -378,6 +399,18 @@
     },
     "symfony/yaml": {
         "version": "v3.4.22"
+    },
+    "twig/extensions": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "ddb2e0a77773b7fd75d8d649545f174e664500ab"
+        },
+        "files": [
+            "config/packages/twig_extensions.yaml"
+        ]
     },
     "twig/twig": {
         "version": "v2.6.2"

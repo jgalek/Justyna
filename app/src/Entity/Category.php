@@ -1,19 +1,20 @@
 <?php
 /**
- * Task entity.
+ * Category entity.
  */
-
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Task class.
+ * Category class.
  *
- * @ORM\Entity(repositoryClass="App\Repository\TaskRepository")
- * @ORM\Table(name="tasks")
+ * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
+ * @ORM\Table(name="categories")
  */
-class Task
+class Category
 {
     /**
      * Use constants to define configuration options that rarely change instead
@@ -22,7 +23,8 @@ class Task
      *
      * @constant int NUMBER_OF_ITEMS
      */
-    const NUMBER_OF_ITEMS = 3;
+    const NUMBER_OF_ITEMS = 10;
+
     /**
      * Primary key.
      *
@@ -55,20 +57,24 @@ class Task
     /**
      * Title.
      *
-     * @var string
+     * @var sring
      *
      * @ORM\Column(
      *     type="string",
-     *     length=255,
+     *     length=64
      * )
      */
     private $title;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="tasks")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\OneToMany(targetEntity="App\Entity\Task", mappedBy="category")
      */
-    private $category;
+    private $tasks;
+
+    public function __construct()
+    {
+        $this->tasks = new ArrayCollection();
+    }
 
     /**
      * Getter for Id.
@@ -140,14 +146,33 @@ class Task
         $this->title = $title;
     }
 
-    public function getCategory(): ?Category
+    /**
+     * @return Collection|Task[]
+     */
+    public function getTasks(): Collection
     {
-        return $this->category;
+        return $this->tasks;
     }
 
-    public function setCategory(?Category $category): self
+    public function addTask(Task $task): self
     {
-        $this->category = $category;
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->contains($task)) {
+            $this->tasks->removeElement($task);
+            // set the owning side to null (unless already changed)
+            if ($task->getCategory() === $this) {
+                $task->setCategory(null);
+            }
+        }
 
         return $this;
     }
