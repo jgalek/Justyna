@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {{ 'title.task_list'|trans }}
+{{ 'title.task_list'|trans }}
 {% endblock %}
 
 {% block body %}
@@ -19,6 +19,7 @@
                 <th>{{ knp_pagination_sortable(pagination, 'label.created_at'|trans, 't.createdAt') }}</th>
                 <th>{{ knp_pagination_sortable(pagination, 'label.updated_at'|trans, 't.updatedAt') }}</th>
                 <th>{{ knp_pagination_sortable(pagination, 'label.title'|trans, 't.title') }}</th>
+                <th>{{ 'label.category'|trans }}</th>
                 <th>{{ 'label.actions'|trans }}</th>
             </tr>
             </thead>
@@ -29,6 +30,7 @@
                     <td>{{ task.createdAt|localizeddate }}</td>
                     <td>{{ task.updatedAt|localizeddate }}</td>
                     <td>{{ task.title }}</td>
+                    <td>{{ task.category.title }}</td>
                     <td>
                         <a href="{{ url('task_view', {id: task.id}) }}" title="{{ 'action.view'|trans }}">
                             {{ 'action.view'|trans }}
