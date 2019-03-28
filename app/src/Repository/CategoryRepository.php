@@ -19,6 +19,35 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    /**
+     * Save record.
+     *
+     * @param \App\Entity\Category $category Category entity
+     *
+     * @return void
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function save(Category $category): void
+    {
+        $this->_em->persist($category); //od tego momentu śledzi tę enecję
+        $this->_em->flush($category); //bez argumentu, aktualizuje wszystko
+    }
+    /**
+     * Delete record.
+     *
+     * @param \App\Entity\Category $category Category entity
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function delete(Category $category): void
+    {
+        $this->_em->remove($category);
+        $this->_em->flush($category);
+    }
+
     // /**
     //  * @return Category[] Returns an array of Category objects
     //  */
