@@ -1,6 +1,6 @@
 <?php
 /**
- * Category entity.
+ * Tag entity.
  */
 
 namespace App\Entity;
@@ -13,14 +13,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Category class.
+ * Tag class.
  *
- * @ORM\Entity(repositoryClass="App\Repository\CategoryRepository")
- * @ORM\Table(name="categories")
+ * @ORM\Entity(repositoryClass="App\Repository\TagRepository")
+ * @ORM\Table(name="tags")
  *
  * @UniqueEntity(fields={"title"})
  */
-class Category
+class Tag
 {
     /**
      * Use constants to define configuration options that rarely change instead
@@ -86,17 +86,6 @@ class Category
      */
     private $title;
 
-    /**
-     * Tasks.
-     *
-     * @var Collection|null
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="App\Entity\Task",
-     *     mappedBy="category",
-     * )
-     */
-    private $tasks;
 
     /**
      * Code.
@@ -116,6 +105,11 @@ class Category
      * )
      */
     private $code;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Task", mappedBy="tags")
+     */
+    private $tasks;
 
     public function __construct()
     {
@@ -192,6 +186,18 @@ class Category
         $this->title = $title;
     }
 
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Task[]
      */
@@ -204,7 +210,7 @@ class Category
     {
         if (!$this->tasks->contains($task)) {
             $this->tasks[] = $task;
-            $task->setCategory($this);
+            $task->addTag($this);
         }
 
         return $this;
@@ -214,23 +220,8 @@ class Category
     {
         if ($this->tasks->contains($task)) {
             $this->tasks->removeElement($task);
-            // set the owning side to null (unless already changed)
-            if ($task->getCategory() === $this) {
-                $task->setCategory(null);
-            }
+            $task->removeTag($this);
         }
-
-        return $this;
-    }
-
-    public function getCode(): ?string
-    {
-        return $this->code;
-    }
-
-    public function setCode(string $code): self
-    {
-        $this->code = $code;
 
         return $this;
     }
