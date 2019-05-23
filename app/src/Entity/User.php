@@ -119,7 +119,7 @@ class User implements UserInterface
     /**
      * Roles.
      *
-     *
+     * @ORM\Column(type="array")
      */
     private $roles = [];
 

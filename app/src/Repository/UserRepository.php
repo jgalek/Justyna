@@ -1,67 +1,50 @@
 <?php
-/**
- * User repository.
- */
 
 namespace App\Repository;
 
+use App\Entity\User;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
+
 /**
- * Class UserRepository.
+ * @method User|null find($id, $lockMode = null, $lockVersion = null)
+ * @method User|null findOneBy(array $criteria, array $orderBy = null)
+ * @method User[]    findAll()
+ * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserRepository
+class UserRepository extends ServiceEntityRepository
 {
-    /**
-     * Data.
-     *
-     * @var array
-     */
-    private $data = [
-        [
-            'title' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-            'tags' => [
-                'Sed',
-                'convallis',
-                'nibh',
-            ],
-        ],
-        [
-            'title' => 'Etiam diam ipsum, dignissim eget suscipit nec, faucibus accumsan felis',
-            'tags' => [
-                'Phasellus',
-                'vestibulum',
-                'tortor',
-            ],
-        ],
-        [
-            'title' => 'Nullam eget dui blandit, scelerisque lacus a, sagittis nibh',
-            'tags' => [
-                'Curabitur',
-                'consectetur',
-                'porttitor',
-            ],
-        ],
-    ];
-
-    /**
-     * Find all.
-     *
-     * @return array Result
-     */
-    public function findAll(): array
+    public function __construct(RegistryInterface $registry)
     {
-        return $this->data;
+        parent::__construct($registry, User::class);
     }
 
-    /**
-     * Find one by Id.
-     *
-     * @param int $id Id
-     *
-     * @return array|null Result
-     */
-    public function findById(int $id): ?array
+    // /**
+    //  * @return User[] Returns an array of User objects
+    //  */
+    /*
+    public function findByExampleField($value)
     {
-        return isset($this->data[$id]) && count($this->data)
-            ? $this->data[$id] : null;
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.exampleField = :val')
+            ->setParameter('val', $value)
+            ->orderBy('u.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
     }
+    */
+
+    /*
+    public function findOneBySomeField($value): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+    */
 }

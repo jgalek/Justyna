@@ -5,186 +5,58 @@
 
 namespace App\Controller;
 
-use App\Entity\Security;
-use App\Repository\SecurityRepository;
-use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Form\SecurityType;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 /**
  * Class SecurityController.
- *
- * @Route("/security")
  */
 class SecurityController extends AbstractController
 {
     /**
-     * Index action.
+     * Login form action.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request    HTTP request
-     * @param \App\Repository\SecurityRepository        $repository Security repository
-     * @param \Knp\Component\Pager\PaginatorInterface   $paginator  Paginator
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @Route(
-     *     "/",
-     *     name="security_index",
-     * )
-     */
-    public function index(Request $request, SecurityRepository $repository, PaginatorInterface $paginator): Response
-    {
-        $pagination = $paginator->paginate(
-            $repository->queryAll(),
-            $request->query->getInt('page', 1),
-            Security::NUMBER_OF_ITEMS
-        );
-
-        return $this->render(
-            'security/index.html.twig',
-            ['pagination' => $pagination]
-        );
-    }
-
-    /**
-     * View action.
-     *
-     * @param \App\Entity\Security $security Security entity
+     * @param \Symfony\Component\Security\Http\Authentication\AuthenticationUtils $authenticationUtils Auth utils
      *
      * @return \Symfony\Component\HttpFoundation\Response HTTP response
      *
      * @Route(
-     *     "/{id}",
-     *     name="security_view",
-     *     requirements={"id": "[1-9]\d*"},
+     *     "/login",
+     *     name="security_login",
      * )
      */
-    public function view(Security $security): Response
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        return $this->render(
-            'security/view.html.twig',
-            ['security' => $security]
-        );
-    }
-    /**
-     * New action.
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request    HTTP request
-     * @param \App\Repository\SecurityRepository        $repository Security repository
-     *
-     * @return \Symfony\Component\HttpFoundation\Response HTTP response
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     *
-     * @Route(
-     *     "/new",
-     *     methods={"GET", "POST"},
-     *     name="security_new",
-     * )
-     */
-    public function new(Request $request, SecurityRepository $repository): Response
-    {
-        $security = new Security();
-        $form = $this->createForm(SecurityType::class, $security);
-        $form->handleRequest($request);
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $repository->save($security);
-
-            $this->addFlash('success', 'message.created_successfully');
-
-            return $this->redirectToRoute('security_index');
-        }
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render(
-            'security/new.html.twig',
-            ['form' => $form->createView()]
-        );
-    }
-    /**
-     * Edit action.
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request    HTTP request
-     * @param \App\Entity\Security                      $security   Security entity
-     * @param \App\Repository\SecurityRepository        $repository Security repository
-     *
-     * @return \Symfony\Component\HttpFoundation\Response HTTP response
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     *
-     * @Route(
-     *     "/{id}/edit",
-     *     methods={"GET", "PUT"},
-     *     requirements={"id": "[1-9]\d*"},
-     *     name="security_edit",
-     * )
-     */
-    public function edit(Request $request, Security $security, SecurityRepository $repository): Response
-    {
-        $form = $this->createForm(SecurityType::class, $security, ['method' => 'put']);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $security->setUpdatedAt(new \DateTime());
-            $repository->save($security);
-
-            $this->addFlash('success', 'message.updated_successfully');
-
-            return $this->redirectToRoute('security_index');
-        }
-
-        return $this->render(
-            'security/edit.html.twig',
+            'security/login.html.twig',
             [
-                'form' => $form->createView(),
-                'security' => $security,
+                'last_username' => $lastUsername,
+                'error' => $error,
             ]
         );
     }
+
     /**
-     * Delete action.
+     * Logout action.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request    HTTP request
-     * @param \App\Entity\Security                      $security   Security entity
-     * @param \App\Repository\SecurityRepository        $repository Security repository
-     *
-     * @return \Symfony\Component\HttpFoundation\Response HTTP response
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      *
      * @Route(
-     *     "/{id}/delete",
-     *     methods={"GET", "DELETE"},
-     *     requirements={"id": "[1-9]\d*"},
-     *     name="security_delete",
+     *     "/logout",
+     *     name="security_logout",
      * )
      */
-    public function delete(Request $request, Security $security, SecurityRepository $repository): Response
+    public function logout(): void
     {
-        $form = $this->createForm(FormType::class, $security, ['method' => 'delete']);
-        $form->handleRequest($request);
-
-        if ($request->isMethod('delete')) {
-            $form->submit($request->request->get($form->getName()));
-            $repository->delete($security);
-
-            $this->addFlash('success', 'message.deleted_successfully');
-
-            return $this->redirectToRoute('security_index');
-        }
-
-        return $this->render(
-            'security/delete.html.twig',
-            [
-                'form' => $form->createView(),
-                'security' => $security,
-            ]
-        );
+        // Request is intercepted before reaches this exception:
+        throw new \Exception('Internal security module error');
     }
 }
